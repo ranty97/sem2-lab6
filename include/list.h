@@ -3,9 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifndef LAB6_LIST_H
-#define LAB6_LIST_H
-
 typedef struct node node;
 
 struct node{
@@ -39,5 +36,3 @@ node *initNode(node *self, int number);
 typedef void (*visitor_f)(node *x, void *data);
 
 void visitList(list *self, visitor_f visitor, void *data);
-
-#endif //LAB6_LIST_H
