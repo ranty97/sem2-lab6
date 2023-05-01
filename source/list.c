@@ -6,9 +6,12 @@ bool empty(list *self) {
 
 void push(list *self, int number) {
     node *new = initNode(malloc(sizeof(*new)), number);
+    pushNode(self, new);
+}
 
+void pushNode(list *self, node *new) {
     if (empty(self)) {
-        self->head = self->tail = new;
+        self->head = self->tail =  new;
         return;
     }
 
@@ -39,23 +42,36 @@ void freeNode(node *what) {
 }
 
 void eraseFromList(list *self, node *what) {
+    detachFromList(self, what);
+    freeNode(what);
+}
+
+void detachFromList(list *self, node *what) {
     if (self->head == what) self->head = what->next;
     if (self->tail == what) self->tail = what->prev;
-    freeNode(what);
+
+    if (what->next) what->next->prev = what->prev;
+    if (what->prev) what->prev->next = what->next;
+
+    what->next = NULL;
+    what->prev = NULL;
 }
 
 node *initNode(node *self, int number) {
     *self = (node) {
             .number = number,
-            .next = self,
-            .prev = self,
+            .next = NULL,
+            .prev = NULL,
     };
     return self;
 }
 
 void visitList(list *self, visitor_f visitor, void *data) {
-    for (node *it = self->head; it != self->tail; it = it->next) {
+    for (node *it = self->head; it != NULL; it = it->next) {
         visitor(it, data);
     }
-    visitor(self->tail, data);
+}
+
+void printVisitor(node *x, void *data){
+    printf("%d ", x->number);
 }
